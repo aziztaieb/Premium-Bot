@@ -368,7 +368,7 @@ async def premium_subs_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(
                 text=GO_BACK_TEXT, callback_data="go_back_cancelled"
             ),
-            InlineKeyboardButton(text="👤 ارتباط با پشتبانی",
+            InlineKeyboardButton(text="👤 Contact Support",
                                  url=f"https://t.me/{ADMIN_USERNAME}"),
 
         ],
@@ -519,12 +519,12 @@ async def handle_custom_amount(update: Update, context: ContextTypes.DEFAULT_TYP
         if not is_valid_amount(custom_amount):
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="⚠️ مقدار وارد شده غلط است لطفا یک عدد معتبر وارد کنید"
+                text="⚠️ The entered amount is incorrect, please enter a valid number."
             )
             return
 
     # Store the custom amount in the user's session
-    set_session(user_id, "sub_choice", f"{custom_amount} تا استارز")
+    set_session(user_id, "sub_choice", f"{custom_amount} Stars")
     set_session(user_id, "sub_price", round_up_to_thousands(irr_price))
     set_session(user_id, 'profit_amount', float(profit_amount))
 
@@ -558,7 +558,7 @@ async def buy_for_self(update: Update, context: ContextTypes.DEFAULT_TYPE):
         invoice_price = get_session(user_id, "sub_price")
 
         if not invoice_title or not invoice_price:
-            await context.bot.send_message(chat_id=update.effective_chat.id, text="خطا")
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="false")
             return
 
         # Check if the username was entered earlier; if not, use the Telegram username
@@ -874,7 +874,7 @@ async def buy_success(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif not photo:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="لطفا عکس بفرست",
+            text="Please send a photo.",
         )
 
 
@@ -967,21 +967,20 @@ async def my_subs(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Pay Approved": PAY_APPROVED_TEXT,
             "Approved": APPROVED_TEXT,
             "Canceled": CANCELLED_TEXT,
-            None: "نامشخص",
+            None: "Unknown",
         }
         premium_subs_list = "\n".join(
             [
                 f"""
-💢 سفارش: {sub}
-👤 برای ایدی تلگرام : @{username}
-📅 ساخته شده : {datetime.strptime(created, '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y')}
-⭐️ وضعیت : {status_translation.get(status)}
+        💢 Order: {sub}
+        👤 For Telegram ID: @{username}
+        📅 Created on: {datetime.strptime(created, '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y')}
+        ⭐️ Status: {status_translation.get(status)}
                 """
-                # f"- @{username}: اشتراک {sub} (تاریخ ایجاد: {created.strftime('%Y-%m-%d %H:%M:?')}) - وضعیت: {status_translation.get(status, 'نامشخص')}"
                 for username, sub, created, status in user_data
             ]
         )
-        response_message = f"سفارشات شما :\n{premium_subs_list}"
+        response_message = f"Your orders:\n{premium_subs_list}"
     else:
         response_message = NO_SUB_TEXT
 
